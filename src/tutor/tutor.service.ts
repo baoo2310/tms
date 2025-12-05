@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeepPartial } from 'typeorm';
 import { TutorProfile } from './tutor-profile.entity';
 import { User } from 'src/user/user.entity';
 
@@ -18,10 +18,10 @@ export class TutorService {
     });
     if (existing) throw new BadRequestException('Already a tutor');
     const profile = this.tutorRepo.create({
-      user,
+      id: user.id,
       expertise,
       isVerified: false,
-    });
+    } as DeepPartial<TutorProfile>);
     return this.tutorRepo.save(profile);
   }
 }

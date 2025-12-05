@@ -19,7 +19,7 @@ export class TutorProfile {
   max_capacity: number;
 
   @Column({ default: false })
-  isVerified: boolean;
+  isActived: boolean;
 
   @OneToOne(() => User, (user) => user.tutorProfile)
   @JoinColumn()
