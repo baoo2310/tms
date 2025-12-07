@@ -1,7 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
-import { TutorProfile } from '../tutor/tutor-profile.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  TableInheritance,
+  OneToMany,
+} from 'typeorm';
+import { Enrollment } from '../group/enrollment';
 
 export enum UserRole {
+  UNKNOWN = 'UNKNOWN',
   STUDENT = 'STUDENT',
   TUTOR = 'TUTOR',
   MANAGER = 'MANAGER',
@@ -9,6 +16,7 @@ export enum UserRole {
 }
 
 @Entity('users')
+@TableInheritance({ pattern: 'STI' })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -23,18 +31,15 @@ export class User {
   email: string;
 
   @Column({ default: false })
-  isVerified: boolean;
+  isVeryfied: boolean;
 
   @Column({
     type: 'enum',
     enum: UserRole,
-    default: UserRole.STUDENT,
+    default: UserRole.UNKNOWN,
   })
   role: UserRole;
 
-  @Column({ nullable: true })
-  faculty: string;
-
-  @OneToOne(() => TutorProfile, (profile) => profile.user)
-  tutorProfile: TutorProfile;
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.student)
+  groupEnrollments: Enrollment[];
 }
